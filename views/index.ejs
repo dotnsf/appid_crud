@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<title>AppId CRUD</title>
+<script type="text/javascript" src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="apple-mobile-web-app-title" content="AppId CRUD"/>
+
+<style type="text/css">
+html, body{
+  text-align: center;
+  background-color: #fafafa;
+  font-size: 20px;
+  color: #333;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>#</th><th>email</th><th>name</th><th>company</th><th>actions</th>
+      </tr>
+    </thead>
+    <tbody id="table_tbody">
+    </tbody>
+  </table>
+</div>
+
+<div class="container p-3" id="div_detail">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td id="edit_id"></td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td id="edit_email"></td>
+      </tr>
+      <tr>
+        <td>name</td>
+        <td id="detail_name"><input id="edit_name" class="form-control" type="text" placeholder="name" value=""/></td>
+      </tr>
+      <tr>
+        <td>company</td>
+        <td id="detail_company"><input id="edit_company" class="form-control" type="text" placeholder="company" value=""/></td>
+      </tr>
+      <tr>
+        <td colspan="2"><button id="edit_save_btn" class="btn btn-primary" onClick="editSave();">Save</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+$(function(){
+  getUsers();
+});
+
+function getUsers(){
+  $('#table_tbody').html( '' );
+  $.ajax({
+    type: 'GET',
+    url: '/users',
+    success: function( result ){
+      if( result && result.status && result.users ){
+        console.log( result.users );
+        for( var i = 0; i < result.users.length; i ++ ){
+          var user = result.users[i];
+          var tr = '<tr>'
+            + '<td>' + user.id + '</td>'
+            + "<td><a href='#' onClick='selectUser(\"" + user.id + "\");'>" + user.email + "</a></td>"
+            + '<td>' + user.name + '</td>'
+            + '<td>' + user.attributes.company + '</td>'
+            + "<td><button class='btn btn-danger' onClick='deleteUser(\"" + user.id + "\");'>delete</button></td>"
+            + '</tr>';
+          $('#table_tbody').append( tr );
+        }
+      }
+    },
+    error: function( e0, e1, e2 ){
+      console.log( e0, e1, e2 );
+    }
+  });
+}
+
+function selectUser( id ){
+  $.ajax({
+    type: 'GET',
+    url: '/user/' + id,
+    success: function( result ){
+      if( result && result.status && result.user ){
+        console.log( result.user );
+        $('#edit_id').html( result.user.id );
+        $('#edit_email').html( result.user.email );
+        if( result.user.name ){
+          $('#edit_name').val( result.user.name );
+        }else{
+          $('#edit_name').val( '' );
+        }
+        if( result.user.attributes && result.user.attributes.company ){
+          $('#edit_company').val( result.user.attributes.company );
+        }else{
+          $('#edit_company').val( '' );
+        }
+      }
+    },
+    error: function( e0, e1, e2 ){
+      console.log( e0, e1, e2 );
+    }
+  });
+}
+
+function editSave(){
+  var id = $('#edit_id').text();
+  var profile = { attributes: {} };
+  //profile.attributes['name'] = $('#edit_name').val();
+  profile.attributes['company'] = $('#edit_company').val();
+  $.ajax({
+    type: 'PUT',
+    url: '/user/' + id,
+    data: profile,
+    success: function( result ){
+      if( result && result.status ){
+        getUsers();
+      }
+    },
+    error: function( e0, e1, e2 ){
+      console.log( e0, e1, e2 );
+    }
+  });
+}
+
+function deleteUser( id ){
+  if( confirm( 'Delete user : ' + id + ' ?' ) ){
+    $.ajax({
+      type: 'DELETE',
+      url: '/user/' + id,
+      success: function( result ){
+        if( result && result.status ){
+          getUsers();
+        }
+      },
+      error: function( e0, e1, e2 ){
+        console.log( e0, e1, e2 );
+      }
+    });
+  }
+}
+</script>
+</body>
+</html>
