@@ -1,10 +1,10 @@
 //. update.js
 var request = require( 'request' );
 
-var apiKey = '';    // <-- EDIT
-var tenantId = '';  // <-- EDIT
-var region = '';    // <-- EDIT
-var userId = '';    // <-- EDIT
+var apiKey = '';         // <-- EDIT
+var tenantId = '';       // <-- EDIT
+var region = 'eu-gb';    // <-- EDIT
+var userId = '';         // <-- EDIT
 var access_token = null;
 console.log( 'userId = ' + userId );
 
