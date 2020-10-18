@@ -1,10 +1,10 @@
 //. update.js
 var request = require( 'request' );
 
-var apiKey = '';
-var tenantId = '';
-var region = '';
-var userId = '';
+var apiKey = '';    // <-- EDIT
+var tenantId = '';  // <-- EDIT
+var region = '';    // <-- EDIT
+var userId = '';    // <-- EDIT
 var access_token = null;
 console.log( 'userId = ' + userId );
 
@@ -49,6 +49,7 @@ async function getAccessToken(){
   });
 }
 
+//. GET /management/v4/{tenantId}/users/{id}/profile
 async function getUser( id ){
   return new Promise( async ( resolve, reject ) => {
     if( access_token && id ){
@@ -77,6 +78,7 @@ async function getUser( id ){
   });
 }
 
+//. PUT /management/v4/{tenantId}/users/{id}/profile
 async function updateUser( id, profile ){
   return new Promise( async ( resolve, reject ) => {
     console.log( 'profile', profile );
