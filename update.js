@@ -90,7 +90,8 @@ async function updateUser( id, profile ){
       var option1 = {
         url: 'https://' + region + '.appid.cloud.ibm.com/management/v4/' + tenantId + '/users/' + id + '/profile',
         method: 'PUT',
-        data: profile,  //. { attributes: { company: 'xyz' } }
+	json: true,
+        body: profile,  //. { attributes: { company: 'xyz' } }
         headers: headers1
       };
       request( option1, ( err1, res1, body1 ) => {
@@ -100,7 +101,7 @@ async function updateUser( id, profile ){
         }else{
           //. body1 = {"errorCode":"INVALID_REQUEST","message":"data should have required property 'attributes'"}
           console.log( 'UPGATE profile sucess', body1 );
-          var result = JSON.parse( body1 );
+          var result = body1;
           resolve( result );
         }
       });
